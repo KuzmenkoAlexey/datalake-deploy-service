@@ -64,6 +64,11 @@ class GCPDataLakeDeployment2(DataLakeDeploymentInterface):
 
         storage_client.create_bucket(bucket_name)
 
+        # TODO: review Column Families
+        cf_name = "ColumnFamily"
+        cf = table.column_family(cf_name)
+        cf.create()
+
         LOGGER.info("GCP Data Lake Deployment 2 created")
         return GCPDeployedResources2(
             bigtable={
