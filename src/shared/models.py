@@ -73,9 +73,15 @@ class AWSCredentials(BaseModel):
     secret_access_key: constr(max_length=256)
 
 
+class AzureCredentials(BaseModel):
+    tenant_id: constr(max_length=256)
+    client_id: constr(max_length=100)
+    client_secret: constr(max_length=100)
+
+
 class ProjectCredentialsMixin(BaseModel):
     project: typing.Optional[UUID4]
-    credentials: typing.Union[GCPCredentials, AWSCredentials]
+    credentials: typing.Union[GCPCredentials, AWSCredentials, AzureCredentials]
 
     def create_update_dict(self):
         return self.dict(
