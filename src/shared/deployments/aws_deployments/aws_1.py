@@ -4,9 +4,9 @@ from boto3 import client
 from botocore.client import Config
 from pydantic import BaseModel
 
-from database.models import ProjectDB, ProjectCredentialsDB, ProjectDeployDB
-from utils.logger import setup_logger
+from database.models import ProjectCredentialsDB, ProjectDB, ProjectDeployDB
 from shared.deployments.base import DataLakeDeploymentInterface
+from utils.logger import setup_logger
 
 LOGGER = setup_logger()
 

@@ -33,6 +33,6 @@ jobs:
 
       - name: Codestyle Check
         run: |
+          isort --check-only src
           black --check src
           flake8 src
-

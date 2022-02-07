@@ -2,14 +2,14 @@ import typing
 from typing import Optional
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, ExpiredSignatureError, jwt
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import ExpiredSignatureError, JWTError, jwt
 from pydantic import UUID4
 
-from api.models import JwtUserData, InterServiceData
+from api.models import InterServiceData, JwtUserData
 from config import settings
 from database.manager import ObjectDoesntExist
-from database.models import get_project_manager, ProjectManager, ProjectDB
+from database.models import ProjectDB, ProjectManager, get_project_manager
 
 
 class UnauthenticatedException(Exception):

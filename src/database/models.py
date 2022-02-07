@@ -3,9 +3,9 @@ from pydantic import UUID4
 
 from api.models import ProjectCreate, ProjectCredentialsCreate, ProjectDeployCreate
 from database.db import (
-    get_project_collection,
     BaseDBModel,
     MongoDatabase,
+    get_project_collection,
     get_project_credentials_collection,
     get_project_deploy_collection,
 )

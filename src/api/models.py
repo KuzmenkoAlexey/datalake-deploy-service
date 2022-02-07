@@ -1,5 +1,6 @@
 import typing
-from pydantic import BaseModel, UUID4
+
+from pydantic import UUID4, BaseModel
 
 from api import base_models
 from shared import models as shared_models
@@ -36,7 +37,6 @@ class ProjectCredentialsCreate(
 #########################
 # ProjectDeploy #########
 #########################
-# we do not have a regular model because we do not want to show credentials
 class ProjectDeployCreate(
     shared_models.ProjectDeployMixin, base_models.BaseCreateModel
 ):

@@ -1,4 +1,4 @@
-from database.models import ProjectDB, ProjectCredentialsDB, ProjectDeployDB
+from database.models import ProjectCredentialsDB, ProjectDB, ProjectDeployDB
 
 
 class DataLakeDeploymentInterface:

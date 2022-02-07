@@ -1,8 +1,8 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_current_user, get_project_or_404
-from api.models import Project, ProjectCreate, JwtUserData, ProjectUpdate
-from database.models import get_project_manager, ProjectManager, ProjectDB
+from api.models import JwtUserData, Project, ProjectCreate, ProjectUpdate
+from database.models import ProjectDB, ProjectManager, get_project_manager
 
 projects_router = APIRouter(prefix="/v1/projects", tags=["projects"], dependencies=[])
 

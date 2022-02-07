@@ -1,6 +1,7 @@
-from api.dependencies import UnauthenticatedException
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
+
+from api.dependencies import UnauthenticatedException
 
 
 async def handle_unauthenticated_exception(

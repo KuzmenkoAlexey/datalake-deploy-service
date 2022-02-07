@@ -22,8 +22,10 @@ class ObjectDoesntExist(DBManagerException):
 
 
 class BaseDBManager(typing.Generic[BCM, BDBM]):
+    # TODO: Delete if it won't be used
     object_db_model: typing.Type[BDBM]
 
+    # TODO: Synchronize user filters between all operations
     def __init__(self, model_db: MongoDatabase[BDBM]):
         self.model_db = model_db
 

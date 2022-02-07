@@ -1,16 +1,16 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, Response
 
 from api.dependencies import get_current_user, get_project_or_404
-from api.models import ProjectDeployCreate, JwtUserData
+from api.models import JwtUserData, ProjectDeployCreate
 from database.models import (
-    get_project_deploy_manager,
-    get_project_manager,
-    get_project_credentials_manager,
+    ProjectCredentialsManager,
+    ProjectDB,
     ProjectDeployManager,
     ProjectManager,
-    ProjectDB,
-    ProjectCredentialsManager,
+    get_project_credentials_manager,
+    get_project_deploy_manager,
+    get_project_manager,
 )
 from shared.deployments import DEPLOYMENT_CLASSES
 
