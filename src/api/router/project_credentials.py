@@ -1,14 +1,14 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, Response
 
 from api.dependencies import get_current_user, get_project_or_404
-from api.models import ProjectCredentialsCreate, JwtUserData, ProjectUpdate
+from api.models import JwtUserData, ProjectCredentialsCreate, ProjectUpdate
 from database.models import (
+    ProjectCredentialsManager,
+    ProjectDB,
+    ProjectManager,
     get_project_credentials_manager,
     get_project_manager,
-    ProjectCredentialsManager,
-    ProjectManager,
-    ProjectDB,
 )
 from shared.credential_verifiers import verify_credentials
 

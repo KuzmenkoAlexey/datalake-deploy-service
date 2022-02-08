@@ -4,7 +4,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 from pydantic import BaseModel
 
-from database.models import ProjectDB, ProjectCredentialsDB, ProjectDeployDB
+from database.models import ProjectCredentialsDB, ProjectDB, ProjectDeployDB
 from shared.deployments.base import DataLakeDeploymentInterface
 from utils.gcp import get_credentials_tmp_path
 from utils.logger import setup_logger

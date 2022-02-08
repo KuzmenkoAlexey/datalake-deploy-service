@@ -2,7 +2,7 @@ import inspect
 import typing
 from enum import Enum
 
-from pydantic import BaseModel, constr, UUID4, stricturl
+from pydantic import UUID4, BaseModel, constr, stricturl
 
 
 def optional(*fields):
@@ -35,11 +35,7 @@ class ProjectMixin(BaseModel):
     verified: typing.Optional[bool] = False
     name: str
     service_provider: constr(
-        regex=(
-            fr"^({ServiceProviderType.AWS.value}"  # noqa
-            fr"|{ServiceProviderType.AZURE.value}"
-            fr"|{ServiceProviderType.GCP.value})$"
-        )
+        regex=fr"^({'|'.join([e.value for e in ServiceProviderType])})$"  # noqa
     )
 
     def create_update_dict(self):
@@ -108,11 +104,7 @@ class GCPProjectDeployType(str, Enum):
 class ProjectDeployMixin(BaseModel):
     project: typing.Optional[UUID4]
     deploy_type: constr(
-        regex=(
-            fr"^({AWSProjectDeployType.AWS_1.value}"  # noqa
-            fr"|{GCPProjectDeployType.GCP_1.value}"
-            fr"|{GCPProjectDeployType.GCP_2.value})$"
-        )
+        regex=fr"^({'|'.join([e.value for e in (*AWSProjectDeployType, *GCPProjectDeployType)])})$"  # noqa
     )
     project_structure: typing.Optional[dict]
 

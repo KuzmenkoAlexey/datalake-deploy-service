@@ -1,17 +1,14 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_current_inter_service_data
-from api.models import (
-    InterServiceData,
-    FullProjectStructure,
-)
+from api.models import FullProjectStructure, InterServiceData
 from database.models import (
-    get_project_manager,
-    ProjectManager,
-    get_project_deploy_manager,
-    ProjectDeployManager,
     ProjectCredentialsManager,
+    ProjectDeployManager,
+    ProjectManager,
     get_project_credentials_manager,
+    get_project_deploy_manager,
+    get_project_manager,
 )
 
 full_project_router = APIRouter(
