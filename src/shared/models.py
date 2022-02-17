@@ -35,7 +35,7 @@ class ProjectMixin(BaseModel):
     verified: typing.Optional[bool] = False
     name: str
     service_provider: constr(
-        regex=fr"^({'|'.join([e.value for e in ServiceProviderType])})$"  # noqa
+        regex=rf"^({'|'.join([e.value for e in ServiceProviderType])})$"  # noqa
     )
 
     def create_update_dict(self):
@@ -104,7 +104,7 @@ class GCPProjectDeployType(str, Enum):
 class ProjectDeployMixin(BaseModel):
     project: typing.Optional[UUID4]
     deploy_type: constr(
-        regex=fr"^({'|'.join([e.value for e in (*AWSProjectDeployType, *GCPProjectDeployType)])})$"  # noqa
+        regex=rf"^({'|'.join([e.value for e in (*AWSProjectDeployType, *GCPProjectDeployType)])})$"  # noqa
     )
     project_structure: typing.Optional[dict]
 

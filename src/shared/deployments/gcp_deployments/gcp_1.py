@@ -32,7 +32,16 @@ class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
         bigquery.SchemaField("timestamp", "TIMESTAMP", mode="REQUIRED"),
         bigquery.SchemaField("source", "STRING", mode="REQUIRED"),
         bigquery.SchemaField(
-            "tags",
+            "user_tags",
+            "RECORD",
+            mode="REPEATED",
+            fields=[
+                bigquery.SchemaField("name", "STRING", mode="REQUIRED"),
+                bigquery.SchemaField("value", "STRING", mode="NULLABLE"),
+            ],
+        ),
+        bigquery.SchemaField(
+            "system_tags",
             "RECORD",
             mode="REPEATED",
             fields=[
