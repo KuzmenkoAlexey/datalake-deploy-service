@@ -10,7 +10,7 @@ boto3==1.21.2
 botocore==1.24.0
 
 # GCP
-google-cloud-bigquery==2.32.0
+google-cloud-bigquery==2.33.0
 google-cloud-bigtable==2.5.0
 google-cloud-storage==2.1.0
 
