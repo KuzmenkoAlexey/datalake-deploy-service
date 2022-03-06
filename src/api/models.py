@@ -46,7 +46,9 @@ class ProjectDeployCreate(
 class FullProjectStructure(BaseModel):
     project: Project
     credentials: typing.Union[
-        shared_models.GCPCredentials, shared_models.AWSCredentials
+        shared_models.GCPCredentials,
+        shared_models.AWSCredentials,
+        shared_models.AzureCredentials,
     ]
     deploy: shared_models.ProjectDeployMixin
 
