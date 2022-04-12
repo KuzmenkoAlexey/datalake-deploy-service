@@ -52,3 +52,6 @@ cover/
 env/
 venv/
 ENV/
+
+infrastructure/
+*credentials.json

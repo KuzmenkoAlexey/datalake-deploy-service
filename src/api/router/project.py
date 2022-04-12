@@ -13,7 +13,6 @@ async def create_project(
     jwt_user_data: JwtUserData = Depends(get_current_user),
     project_manager: ProjectManager = Depends(get_project_manager),
 ) -> Project:
-    print(project)
     project_db = await project_manager.create(project, jwt_user_data.user_id)
 
     return Project(**project_db.dict())

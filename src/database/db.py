@@ -20,10 +20,22 @@ class DatabaseWrapper:
         cls.__loop = loop
 
     @classmethod
+    def reset_wrapper(cls):
+        cls.__client = None
+        cls.__project_credentials_collection = None
+        cls.__project_deploy_collection = None
+        cls.__projects_collection = None
+        cls.__db = None
+        cls.__loop = None
+
+    @classmethod
     def get_client(cls):
         if cls.__client is None:
+            kwargs = {"uuidRepresentation": "standard"}
+            if cls.__loop:
+                kwargs["io_loop"] = cls.__loop
             cls.__client = motor.motor_asyncio.AsyncIOMotorClient(
-                settings.database_url, uuidRepresentation="standard", io_loop=cls.__loop
+                settings.database_url, **kwargs
             )
         return cls.__client
 

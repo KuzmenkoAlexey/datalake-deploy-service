@@ -12,7 +12,7 @@ from database.models import (
     get_project_deploy_manager,
     get_project_manager,
 )
-from shared.deployments import DEPLOYMENT_CLASSES
+from worker.tasks import deploy_datalake, destroy_datalake
 
 project_deploy_router = APIRouter(
     prefix="/v1/project_deploy", tags=["deploy"], dependencies=[]
@@ -51,14 +51,12 @@ async def create_project_deploy(
         # TODO:
         pass
 
-    deployment_class = DEPLOYMENT_CLASSES[project_deploy.deploy_type]()
-    deploy_result = await deployment_class.deploy_data_lake(
-        project_db, project_credentials
+    deploy_datalake.delay(
+        jwt_user_data.dict(),
+        project_deploy.dict(),
+        project_db.dict(),
+        project_credentials.dict(),
     )
-
-    project_deploy.project = project_db.id
-    project_deploy.project_structure = deploy_result
-    await project_deploy_manager.create(project_deploy, jwt_user_data.user_id)
 
     return JSONResponse(status_code=status.HTTP_201_CREATED)
 
@@ -94,11 +92,8 @@ async def delete_project_deploy(
         # TODO:
         pass
 
-    deployment_class = DEPLOYMENT_CLASSES[project_deploy.deploy_type]()
-    await deployment_class.delete_data_lake(
-        project_db, project_credentials, project_deploy
+    destroy_datalake.delay(
+        project_deploy.dict(), project_db.dict(), project_credentials.dict()
     )
-
-    await project_deploy_manager.delete(project_deploy)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
