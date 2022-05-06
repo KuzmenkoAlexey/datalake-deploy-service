@@ -6,13 +6,66 @@ from pydantic import UUID4, BaseModel, Field
 
 from config import settings
 
-client = motor.motor_asyncio.AsyncIOMotorClient(
-    settings.database_url, uuidRepresentation="standard"
-)
-db = client[settings.database_name]
-projects_collection = db["projects"]
-project_credentials_collection = db["project_credentials"]
-project_deploy_collection = db["project_deploy"]
+
+class DatabaseWrapper:
+    __client = None
+    __db = None
+    __projects_collection = None
+    __project_credentials_collection = None
+    __project_deploy_collection = None
+    __loop = None
+
+    @classmethod
+    def set_event_loop(cls, loop):
+        cls.__loop = loop
+
+    @classmethod
+    def reset_wrapper(cls):
+        cls.__client = None
+        cls.__project_credentials_collection = None
+        cls.__project_deploy_collection = None
+        cls.__projects_collection = None
+        cls.__db = None
+        cls.__loop = None
+
+    @classmethod
+    def get_client(cls):
+        if cls.__client is None:
+            kwargs = {"uuidRepresentation": "standard"}
+            if cls.__loop:
+                kwargs["io_loop"] = cls.__loop
+            cls.__client = motor.motor_asyncio.AsyncIOMotorClient(
+                settings.database_url, **kwargs
+            )
+        return cls.__client
+
+    @classmethod
+    def get_db(cls):
+        if cls.__db is None:
+            client = cls.get_client()
+            cls.__db = client[settings.database_name]
+        return cls.__db
+
+    @classmethod
+    def get_projects_collection(cls):
+        if cls.__projects_collection is None:
+            db = cls.get_db()
+            cls.__projects_collection = db["projects"]
+        return cls.__projects_collection
+
+    @classmethod
+    def get_project_credentials_collection(cls):
+        if cls.__project_credentials_collection is None:
+            db = cls.get_db()
+            cls.__project_credentials_collection = db["project_credentials"]
+        return cls.__project_credentials_collection
+
+    @classmethod
+    def get_project_deploy_collection(cls):
+        if cls.__project_deploy_collection is None:
+            db = cls.get_db()
+            cls.__project_deploy_collection = db["project_deploy"]
+        return cls.__project_deploy_collection
 
 
 class BaseDBModel(BaseModel):
@@ -60,12 +113,12 @@ class MongoDatabase(typing.Generic[BDBM]):
 
 
 def get_project_collection():
-    return projects_collection
+    return DatabaseWrapper.get_projects_collection()
 
 
 def get_project_credentials_collection():
-    return project_credentials_collection
+    return DatabaseWrapper.get_project_credentials_collection()
 
 
 def get_project_deploy_collection():
-    return project_deploy_collection
+    return DatabaseWrapper.get_project_deploy_collection()

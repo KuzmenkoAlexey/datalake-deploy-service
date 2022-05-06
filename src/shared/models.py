@@ -101,10 +101,14 @@ class GCPProjectDeployType(str, Enum):
     GCP_2 = "GCP_2"
 
 
+class AzureProjectDeployType(str, Enum):
+    AZURE_1 = "AZURE_1"
+
+
 class ProjectDeployMixin(BaseModel):
     project: typing.Optional[UUID4]
     deploy_type: constr(
-        regex=rf"^({'|'.join([e.value for e in (*AWSProjectDeployType, *GCPProjectDeployType)])})$"  # noqa
+        regex=rf"^({'|'.join([e.value for e in (*AWSProjectDeployType, *GCPProjectDeployType, *AzureProjectDeployType)])})$"  # noqa
     )
     project_structure: typing.Optional[dict]
 

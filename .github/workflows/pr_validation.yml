@@ -7,6 +7,21 @@ on:
 
 jobs:
   backend_test:
+
+    services:
+      mongodb:
+        image: mongo:4.4
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
     runs-on: ubuntu-20.04
 
     steps:
@@ -15,10 +30,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python 3.9.7
+      - name: Set up Python 3.10.2
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9.7
+          python-version: 3.10.2
 
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -29,6 +44,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
       - name: Codestyle Check
@@ -36,3 +52,11 @@ jobs:
           isort --profile black --check-only src
           black --check src
           flake8 src
+
+      - name: Tests
+        env:
+          DATABASE_NAME: test
+          DATABASE_URL: mongodb://root:example@localhost
+        run: |
+          cd src/
+          python -m pytest tests/

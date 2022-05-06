@@ -1,0 +1,29 @@
+FROM python:3.10.2 as production
+
+RUN apt-get update && \
+    apt-get install -y gnupg software-properties-common curl && \
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
+    apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
+    apt-get update && \
+    apt-get install terraform
+
+RUN mkdir -p /usr/app
+
+WORKDIR /usr/app
+
+COPY requirements.txt /usr/app
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src /usr/app
+
+CMD celery -A worker worker
+
+
+FROM production as development
+
+COPY requirements-dev.txt /usr/app
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
+CMD celery -A worker worker

@@ -1,3 +1,5 @@
+import asyncio
+
 import sentry_sdk
 from fastapi import FastAPI
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
@@ -9,10 +11,13 @@ from api.router.project import projects_router
 from api.router.project_credentials import project_credentials_router
 from api.router.project_deploy import project_deploy_router
 from config import settings
+from database.db import DatabaseWrapper
 
 
-def get_application():
+def get_application(loop=None):
     sentry_sdk.init(dsn=settings.sentry_url, traces_sample_rate=1.0)
+
+    DatabaseWrapper.set_event_loop(loop or asyncio.get_event_loop())
 
     app = FastAPI(title="Deploy Service")
 
