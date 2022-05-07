@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, Response
 
+from api.credential_verifiers import verify_credentials
 from api.dependencies import get_current_user, get_project_or_404
 from api.models import JwtUserData, ProjectCredentialsCreate, ProjectUpdate
-from database.models import (
+from database.manager import (
     ProjectCredentialsManager,
-    ProjectDB,
     ProjectManager,
     get_project_credentials_manager,
     get_project_manager,
 )
-from shared.credential_verifiers import verify_credentials
+from database.models import ProjectDB
 
 project_credentials_router = APIRouter(
     prefix="/v1/project_credentials", tags=["credentials"], dependencies=[]

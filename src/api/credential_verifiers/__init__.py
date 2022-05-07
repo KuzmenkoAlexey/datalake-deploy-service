@@ -1,9 +1,9 @@
+from api.credential_verifiers.amazon import verify_aws_credentials
+from api.credential_verifiers.azure import verify_azure_credentials
+from api.credential_verifiers.google import verify_gcp_credentials
 from api.models import ProjectCredentialsCreate
 from database.models import ProjectDB
-from shared.credential_verifiers.amazon import verify_aws_credentials
-from shared.credential_verifiers.azure import verify_azure_credentials
-from shared.credential_verifiers.google import verify_gcp_credentials
-from shared.models import ServiceProviderType
+from shared.models.providers import ServiceProviderType
 
 
 async def verify_credentials(

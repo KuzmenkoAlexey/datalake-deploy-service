@@ -3,12 +3,12 @@ from celery.utils.log import get_task_logger
 
 from api.models import JwtUserData, ProjectDeployCreate
 from database.db import DatabaseWrapper
+from database.manager import get_project_deploy_manager
 from database.models import (
     ProjectCredentialsDB,
     ProjectDB,
     ProjectDeployDB,
     get_project_deploy_database,
-    get_project_deploy_manager,
 )
 from shared.deployments import DEPLOYMENT_CLASSES
 from worker.celery import app
@@ -24,7 +24,7 @@ def deploy_datalake(
     project_db: dict,
     project_credentials: dict,
 ):
-    LOGGER.error("DEPLOY")
+    LOGGER.info("DEPLOY")
     jwt_user_data = JwtUserData(**jwt_user_data)
     project_deploy = ProjectDeployCreate(**project_deploy)
     project_db = ProjectDB(**project_db)
@@ -53,7 +53,7 @@ def destroy_datalake(
     project_db: dict,
     project_credentials: dict,
 ):
-    LOGGER.error("DESTROY")
+    LOGGER.info("DESTROY")
     project_deploy = ProjectDeployDB(**project_deploy)
     project_db = ProjectDB(**project_db)
     project_credentials = ProjectCredentialsDB(**project_credentials)

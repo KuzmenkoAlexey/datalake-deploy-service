@@ -1,26 +1,25 @@
-import typing
-
 from pydantic import UUID4, BaseModel
 
 from api import base_models
-from shared import models as shared_models
+from shared.models import credentials as shared_credentials
+from shared.models import mixins as shared_mixins
+from utils.models import optional
 
 
 #########################
 # Project ###############
 #########################
-class Project(shared_models.ProjectMixin, BaseModel):
+class Project(shared_mixins.ProjectMixin, BaseModel):
     id: UUID4
     owner: UUID4
-    verified: bool
 
 
-class ProjectCreate(shared_models.ProjectMixin, base_models.BaseCreateModel):
+class ProjectCreate(shared_mixins.ProjectMixin, base_models.BaseCreateModel):
     pass
 
 
-@shared_models.optional
-class ProjectUpdate(shared_models.ProjectMixin, base_models.BaseUpdateModel):
+@optional
+class ProjectUpdate(shared_mixins.ProjectMixin, base_models.BaseUpdateModel):
     pass
 
 
@@ -29,7 +28,7 @@ class ProjectUpdate(shared_models.ProjectMixin, base_models.BaseUpdateModel):
 #########################
 # we do not have a regular model because we do not want to show credentials
 class ProjectCredentialsCreate(
-    shared_models.ProjectCredentialsMixin, base_models.BaseCreateModel
+    shared_mixins.ProjectCredentialsMixin, base_models.BaseCreateModel
 ):
     pass
 
@@ -38,19 +37,18 @@ class ProjectCredentialsCreate(
 # ProjectDeploy #########
 #########################
 class ProjectDeployCreate(
-    shared_models.ProjectDeployMixin, base_models.BaseCreateModel
+    shared_mixins.ProjectDeployMixin, base_models.BaseCreateModel
 ):
     pass
 
 
+#########################
+# FullProjectStructure ##
+#########################
 class FullProjectStructure(BaseModel):
     project: Project
-    credentials: typing.Union[
-        shared_models.GCPCredentials,
-        shared_models.AWSCredentials,
-        shared_models.AzureCredentials,
-    ]
-    deploy: shared_models.ProjectDeployMixin
+    credentials: shared_credentials.AWSCredentials | shared_credentials.GCPCredentials | shared_credentials.AzureCredentials
+    deploy: shared_mixins.ProjectDeployMixin
 
 
 #########################

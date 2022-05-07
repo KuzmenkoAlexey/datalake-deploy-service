@@ -1,6 +1,3 @@
-import typing
-from typing import Optional
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, JWTError, jwt
@@ -8,12 +5,13 @@ from pydantic import UUID4
 
 from api.models import InterServiceData, JwtUserData
 from config import settings
-from database.manager import ObjectDoesntExist
-from database.models import ProjectDB, ProjectManager, get_project_manager
+from database.exceptions import ObjectDoesntExist
+from database.manager import ProjectManager, get_project_manager
+from database.models import ProjectDB
 
 
 class UnauthenticatedException(Exception):
-    def __init__(self, message: Optional[str] = None):
+    def __init__(self, message: str | None = None):
         self.message = message or None
         self.status = 401
         super().__init__(self.message)
@@ -23,7 +21,7 @@ http_bearer = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
-    authorization: typing.Optional[HTTPAuthorizationCredentials] = Depends(http_bearer),
+    authorization: HTTPAuthorizationCredentials | None = Depends(http_bearer),
 ) -> JwtUserData:
     if authorization is None:
         raise UnauthenticatedException()
@@ -44,7 +42,7 @@ async def get_current_user(
 
 
 async def get_current_inter_service_data(
-    authorization: typing.Optional[HTTPAuthorizationCredentials] = Depends(http_bearer),
+    authorization: HTTPAuthorizationCredentials | None = Depends(http_bearer),
 ) -> InterServiceData:
     if authorization is None:
         raise UnauthenticatedException()

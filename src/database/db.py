@@ -1,10 +1,10 @@
 import typing
-import uuid
 
 import motor.motor_asyncio
-from pydantic import UUID4, BaseModel, Field
+from pydantic import UUID4
 
 from config import settings
+from database.base_models import BDBM
 
 
 class DatabaseWrapper:
@@ -68,14 +68,6 @@ class DatabaseWrapper:
         return cls.__project_deploy_collection
 
 
-class BaseDBModel(BaseModel):
-    created_by: UUID4
-    id: UUID4 = Field(default_factory=uuid.uuid4)
-
-
-BDBM = typing.TypeVar("BDBM", bound=BaseDBModel)
-
-
 class MongoDatabase(typing.Generic[BDBM]):
     """Database adapter for MongoDB"""
 
@@ -90,7 +82,7 @@ class MongoDatabase(typing.Generic[BDBM]):
         self.collection = collection
         self.collection.create_index("id", unique=True)
 
-    async def get(self, id: UUID4) -> typing.Optional[BDBM]:
+    async def get(self, id: UUID4) -> BDBM | None:
         db_object = await self.collection.find_one({"id": id})
         return self.db_model(**db_object) if db_object else None
 

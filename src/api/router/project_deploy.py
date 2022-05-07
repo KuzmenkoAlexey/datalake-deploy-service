@@ -3,15 +3,15 @@ from fastapi.responses import JSONResponse, Response
 
 from api.dependencies import get_current_user, get_project_or_404
 from api.models import JwtUserData, ProjectDeployCreate
-from database.models import (
+from database.manager import (
     ProjectCredentialsManager,
-    ProjectDB,
     ProjectDeployManager,
     ProjectManager,
     get_project_credentials_manager,
     get_project_deploy_manager,
     get_project_manager,
 )
+from database.models import ProjectDB
 from worker.tasks import deploy_datalake, destroy_datalake
 
 project_deploy_router = APIRouter(
