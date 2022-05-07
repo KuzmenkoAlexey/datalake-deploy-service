@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_current_inter_service_data
 from api.models import FullProjectStructure, InterServiceData
-from database.models import (
+from database.manager import (
     ProjectCredentialsManager,
     ProjectDeployManager,
     ProjectManager,
