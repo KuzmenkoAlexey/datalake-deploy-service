@@ -44,6 +44,7 @@ def deploy_datalake(
         await project_deploy_manager.create(project_deploy, jwt_user_data.user_id)
 
     async_to_sync(update_project_deploy)()
+    LOGGER.info("DEPLOY SUCCEEDED")
 
 
 @app.task(bind=True)
@@ -69,3 +70,4 @@ def destroy_datalake(
         await project_deploy_manager.delete(project_deploy)
 
     async_to_sync(delete_project_deploy)()
+    LOGGER.info("DESTROY SUCCEEDED")
