@@ -18,14 +18,19 @@ class BigQueryResource(BaseModel):
     table: str
 
 
-class GCPDeployedResources1(BaseModel):
+class CloudStorage(BaseModel):
+    bucket: str
+
+
+class GCPDeployedResources3(BaseModel):
     bigquery: BigQueryResource
+    cloud_storage: CloudStorage
 
 
 TF_STATE = """
 terraform {{
   backend "gcs" {{
-    bucket  = "insmouth-lake-dev-proj-tf-state"
+    bucket  = "qqbucket"
     prefix  = "terraform/{}"
   }}
   required_providers {{
@@ -44,13 +49,14 @@ provider "google" {{
 
 """
 
+
 GCP_BIGQUERY = """
 resource "google_bigquery_dataset" "default" {{
   dataset_id                  = "{dataset_id}"
   friendly_name               = "Project Dataset"
   description                 = "This is a test description"
   location                    = "EU"
-
+  
   labels = {{
     env = "default"
   }}
@@ -75,11 +81,6 @@ resource "google_bigquery_table" "default" {{
   {{
     "name": "id",
     "type": "STRING",
-    "mode": "REQUIRED"
-  }},
-  {{
-    "name": "file",
-    "type": "BYTES",
     "mode": "REQUIRED"
   }},
   {{
@@ -147,13 +148,19 @@ EOF
 }}
 """
 
+GCP_CLOUD_STORAGE = """
+resource "google_storage_bucket" "data_lake_storage" {{
+  name          = "{bucket_name}"
+  location      = "US"
+  force_destroy = true
+}}
+"""
 
-class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
+
+class GCPDataLakeDeployment3(DataLakeDeploymentInterface):
     def deploy_data_lake(self, project: ProjectDB, credentials: ProjectCredentialsDB):
-        LOGGER.info("Creating GCP Data Lake Deployment 1")
+        LOGGER.info("Creating GCP Data Lake Deployment 3")
         gcp_project_id = credentials.credentials.project_id
-        dataset_name = "".join(str(uuid.uuid4()).split("-"))
-        table_name = "".join(str(uuid.uuid4()).split("-"))
         gcp_credentials_path = get_credentials_tmp_path(credentials.credentials)
         this_env = dict(os.environ, GOOGLE_APPLICATION_CREDENTIALS=gcp_credentials_path)
 
@@ -162,6 +169,11 @@ class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
         with open(os.path.join(directory_path, "state.tf"), "w") as f:
             tf_state_f = TF_STATE.format(str(project.id), str(gcp_project_id))
             f.write(tf_state_f)
+
+        dataset_name = "dataset" + str(uuid.uuid4()).replace("-", "")[:10]
+        table_name = "table" + str(uuid.uuid4()).replace("-", "")[:10]
+
+        bucket_name = "bucket" + str(uuid.uuid4()).replace("-", "")[:10]
 
         process = subprocess.run(
             ["terraform", f"-chdir={directory_path}", "init"],
@@ -182,6 +194,10 @@ class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
         with open(os.path.join(directory_path, "bigquery.tf"), "w") as f:
             f.write(GCP_BIGQUERY.format(dataset_id=dataset_name, table_id=table_name))
 
+        LOGGER.info(f"Creating Cloud Storage with bucket_name {bucket_name}")
+        with open(os.path.join(directory_path, "bucket.tf"), "w") as f:
+            f.write(GCP_CLOUD_STORAGE.format(bucket_name=bucket_name))
+
         process = subprocess.run(
             ["terraform", f"-chdir={directory_path}", "apply", "-auto-approve"],
             stdout=subprocess.PIPE,
@@ -195,13 +211,14 @@ class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
             f"exit code:{process.returncode}"
         )
 
-        LOGGER.info("GCP Data Lake Deployment 1 created")
-        return GCPDeployedResources1(
+        LOGGER.info("GCP Data Lake Deployment 3 created")
+        return GCPDeployedResources3(
             bigquery={
                 "project": gcp_project_id,
                 "dataset": dataset_name,
                 "table": table_name,
-            }
+            },
+            cloud_storage={"bucket": bucket_name},
         )
 
     def delete_data_lake(
@@ -210,7 +227,7 @@ class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
         credentials: ProjectCredentialsDB,
         project_deploy: ProjectDeployDB,
     ):
-        LOGGER.info("Deleting GCP Data Lake Deployment 1")
+        LOGGER.info("Deleting GCP Data Lake Deployment 3")
 
         gcp_credentials_path = get_credentials_tmp_path(credentials.credentials)
         this_env = dict(os.environ, GOOGLE_APPLICATION_CREDENTIALS=gcp_credentials_path)
@@ -227,4 +244,4 @@ class GCPDataLakeDeployment1(DataLakeDeploymentInterface):
             f"stderr:{process.stderr.decode()}\n"
             f"exit code:{process.returncode}"
         )
-        LOGGER.info("GCP Data Lake Deployment 1 deleted")
+        LOGGER.info("GCP Data Lake Deployment 3 deleted")
