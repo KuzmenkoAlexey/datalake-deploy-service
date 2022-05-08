@@ -117,7 +117,6 @@ class AWSDataLakeDeployment2(DataLakeDeploymentInterface):
             stderr=subprocess.PIPE,
             env=this_env,
         )
-        result = process.stdout.decode()
         LOGGER.debug(
             f"Terraform apply execution result:\n"
             f"stdout: '{process.stdout.decode()}'\n"

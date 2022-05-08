@@ -56,7 +56,7 @@ resource "google_bigquery_dataset" "default" {{
   friendly_name               = "Project Dataset"
   description                 = "This is a test description"
   location                    = "EU"
-  
+
   labels = {{
     env = "default"
   }}
