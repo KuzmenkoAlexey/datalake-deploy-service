@@ -103,13 +103,9 @@ class AWSDataLakeDeployment2(DataLakeDeploymentInterface):
         with open(os.path.join(directory_path, "bucket.tf"), "w") as f:
             f.write(AWS_STORAGE.format(bucket_name))
 
-        domain_name = (
-            f"osdomain{''.join(str(uuid.uuid4()).split('-'))}"
-            f"{''.join(str(project.id).split('-'))}"[:28]
-        )
         LOGGER.info(f"Creating DynamoDB with name {dynamodb_name}")
-        with open(os.path.join(directory_path, "es.tf"), "w") as f:
-            f.write(AWS_DYNAMODB.format(domain_name))
+        with open(os.path.join(directory_path, "dynamodb.tf"), "w") as f:
+            f.write(AWS_DYNAMODB.format(dynamodb_name))
 
         process = subprocess.run(
             ["terraform", f"-chdir={directory_path}", "apply", "-auto-approve"],
