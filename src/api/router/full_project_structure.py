@@ -17,7 +17,10 @@ full_project_router = APIRouter(
 
 
 @full_project_router.get(
-    "", status_code=status.HTTP_200_OK, response_model=FullProjectStructure
+    "",
+    status_code=status.HTTP_200_OK,
+    response_model=FullProjectStructure,
+    include_in_schema=False,
 )
 async def get_full_project(
     inter_service_data: InterServiceData = Depends(get_current_inter_service_data),
