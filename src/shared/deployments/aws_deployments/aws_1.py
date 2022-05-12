@@ -50,6 +50,7 @@ provider "aws" {{
 AWS_STORAGE = """
 resource "aws_s3_bucket" "b" {{
   bucket = "{}"
+  force_destroy = true
 }}
 """
 
