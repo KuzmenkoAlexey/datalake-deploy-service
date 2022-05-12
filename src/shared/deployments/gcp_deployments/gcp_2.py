@@ -73,6 +73,11 @@ resource "google_bigtable_table" "table" {{
   lifecycle {{
     prevent_destroy = false
   }}
+
+  column_family {{
+    family = "ColumnFamily"
+  }}
+
 }}
 """
 

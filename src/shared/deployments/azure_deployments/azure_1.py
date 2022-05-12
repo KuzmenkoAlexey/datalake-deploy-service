@@ -6,13 +6,11 @@ LOGGER = setup_logger()
 
 
 class AzureDataLakeDeployment1(DataLakeDeploymentInterface):
-    async def deploy_data_lake(
-        self, project: ProjectDB, credentials: ProjectCredentialsDB
-    ):
+    def deploy_data_lake(self, project: ProjectDB, credentials: ProjectCredentialsDB):
         # TODO:
         return {}
 
-    async def delete_data_lake(
+    def delete_data_lake(
         self,
         project: ProjectDB,
         credentials: ProjectCredentialsDB,
