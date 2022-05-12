@@ -77,7 +77,7 @@ resource "google_bigtable_table" "table" {{
   column_family {{
     family = "ColumnFamily"
   }}
-  
+
 }}
 """
 
